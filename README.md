@@ -1,2 +1,2 @@
 # Fibonet
-A super-fast algorithm for calculating Fibonacci numbers using BNET'S METHOD
+A super-fast algorithm for calculating Fibonacci numbers using Binet's Method
