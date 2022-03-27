@@ -25,7 +25,6 @@ function >>(num::ϕField, shift::Int)
 end
 	
 function ^(base::ϕField, n::Int, result=one(base), shift=0)::ϕField
-    s = 0
     if n==0
         return result
     elseif n==1
