@@ -30,7 +30,7 @@ function ^(base::ϕField, n::Int, result=one(base), shift=0)::ϕField
         return result
     elseif n==1
         return ^(base, n>>1, (result*base)>>shift)
-        # this penultimate level, don't square the base and don't bitshift the result
+        # this penultimate level, don't square the base to save compute
     elseif n%2==1
         return ^((base*base)>>1, n>>1, (result*base)>>shift, 1)
     else
