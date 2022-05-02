@@ -24,16 +24,16 @@ function >>(num::ϕField, shift::Int)
     return ϕField(num.natural>>shift, num.root5coeff>>shift)
 end
 	
-function ^(base::ϕField, n::Int, result=one(base), shift=0)::ϕField
+function ^(base::ϕField, n::Int, result=one(base))::ϕField
     if n==0
         return result
     elseif n==1
-        return ^(base, n>>1, (result*base)>>shift)
-        # this penultimate level, don't square the base to save compute
+        return ^(base, n>>1, result*base)
+        # this penultimate level, don't square the base and don't bitshift
     elseif n%2==1
-        return ^((base*base)>>1, n>>1, (result*base)>>shift, 1)
+        return ^((base*base)>>1, n>>1, result*base) >> 1
     else
-        return ^((base*base)>>1, n>>1, result, shift)
+        return ^((base*base)>>1, n>>1, result)
     end
 end
 
