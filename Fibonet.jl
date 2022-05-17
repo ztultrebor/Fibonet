@@ -27,7 +27,7 @@ function ^(base::ϕField, n::Array{Int}, result=one(base))::ϕField
         return result
     elseif pop!(n) == 1
         if result.root5coeff == 0
-            return ^(base, n, (result*result*base))
+            return ^(base, n, result*result*base)
         else
             return ^(base, n, (result*result*base) >> 2)
         end
