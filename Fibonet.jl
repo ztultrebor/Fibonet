@@ -22,15 +22,11 @@ function >>(num::ϕField, shift::Int)
     return ϕField(num.natural>>shift, num.root5coeff>>shift)
 end
 	
-function ^(base::ϕField, n::Array{Int}, result=one(base))::ϕField
+function ^(base::ϕField, n::Array{Int}, result=2)::ϕField
     if n==[]
         return result
     elseif pop!(n) == 1
-        if result.root5coeff == 0
-            return ^(base, n, result*result*base)
-        else
-            return ^(base, n, (result*result*base) >> 2)
-        end
+        return ^(base, n, (result*result*base) >> 2)
     else
         return ^(base, n, (result*result) >> 1)
     end
