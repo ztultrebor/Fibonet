@@ -36,7 +36,7 @@ function ^(base::ϕField, n::Int)::ϕField
     binary_rep = Int[]
     while n > 0
         binary_rep = push!(binary_rep, n%2)
-        n ÷= 2
+        n >>= 1
     end
     return ^(base, binary_rep)
 end
