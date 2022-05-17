@@ -1,4 +1,4 @@
-import Base: convert, promote_rule, one, *, ^, >>
+import Base: convert, promote_rule, *, ^, >>
 
 struct ϕField <: Number
     # represents numbers of the form A + B√5 in Big Integer form
@@ -9,8 +9,6 @@ end
 convert(::Type{ϕField}, x::Int) = ϕField(BigInt(x), 0)
 
 promote_rule(::Type{ϕField}, ::Type{<:Number}) = ϕField
-
-one(::Type{ϕField}) = ϕField(1,0) 
 
 function *(num1::ϕField, num2::ϕField)
     # "Field" multiplication for numbers of the form A + B√5
