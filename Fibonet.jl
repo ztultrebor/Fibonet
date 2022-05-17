@@ -22,17 +22,27 @@ function >>(num::ϕField, shift::Int)
     return ϕField(num.natural>>shift, num.root5coeff>>shift)
 end
 	
-function ^(base::ϕField, n::Int, result=one(base))::ϕField
-    if n==0
+function ^(base::ϕField, n::Array{Int}, result=one(base))::ϕField
+    if n==[]
         return result
-    elseif n==1
-        return ^(base, n>>1, result*base)
-        # this penultimate level, don't square the base and don't bitshift
-    elseif n%2==1
-        return ^((base*base)>>1, n>>1, result*base) >> 1
+    elseif pop!(n) == 1
+        if result.root5coeff == 0
+            return ^(base, n, (result*result*base))
+        else
+            return ^(base, n, (result*result*base) >> 2)
+        end
     else
-        return ^((base*base)>>1, n>>1, result)
+        return ^(base, n, (result*result) >> 1)
     end
+end
+
+function ^(base::ϕField, n::Int)::ϕField
+    binary_rep = Int[]
+    while n > 0
+        binary_rep = push!(binary_rep, n%2)
+        n ÷= 2
+    end
+    return ^(base, binary_rep)
 end
 
 fibonet(n::Int)::BigInt = (ϕField(1,1)^n).root5coeff
