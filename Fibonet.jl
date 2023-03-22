@@ -22,23 +22,23 @@ function >>(num::ϕField, shift::Int)
     return ϕField(num.natural>>shift, num.root5coeff>>shift)
 end
 	
-function ^(base::ϕField, n::Array{Int}, result=2)::ϕField
-    if n==[]
+function ^(base::ϕField, n::Int, result=2, nullshifts=0)::ϕField
+    if nullshifts>0
+        # nullshifts correspond to 0's in the binary representation of n
+        return ^(base, n, (result*result)> 1, nullshifts-1)
+    elseif n==0
         return result
-    elseif pop!(n) == 1
-        return ^(base, n, (result*result*base) >> 2)
     else
-        return ^(base, n, (result*result) >> 1)
+        p, q, measure = 0, 0, 0
+        while n >= 1<<(p+1)
+            p +=1
+            remainder = n%(1<<p)
+            if remainder > measure
+                q, measure = p, remainder
+            end
+        end
+        return ^(base, n - 1<<p, (result*result*base)>>2, p-q)
     end
-end
-
-function ^(base::ϕField, n::Int)::ϕField
-    binary_rep = Int[]
-    while n > 0
-        binary_rep = push!(binary_rep, n%2)
-        n >>= 1
-    end
-    return ^(base, binary_rep)
 end
 
 fibonet(n::Int)::BigInt = (ϕField(1,1)^n).root5coeff
