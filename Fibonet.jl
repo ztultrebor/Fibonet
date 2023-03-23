@@ -25,7 +25,7 @@ end
 function ^(base::ϕField, n::Int, result=2, nullshifts=0)::ϕField
     if nullshifts>0
         # nullshifts correspond to 0's in the binary representation of n
-        return ^(base, n, (result*result)> 1, nullshifts-1)
+        return ^(base, n, (result*result)>>1, nullshifts-1)
     elseif n==0
         return result
     else
