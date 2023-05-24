@@ -21,23 +21,26 @@ function >>(num::ϕField, shift::Int)
     # "Field" right bitshift for numbers of the form A + B√5
     return ϕField(num.natural>>shift, num.root5coeff>>shift)
 end
-	
-function ^(base::ϕField, n::Int, result=2, nullshifts=0)::ϕField
-    if nullshifts>0
-        # nullshifts correspond to 0's in the binary representation of n
-        return ^(base, n, (result*result)>>1, nullshifts-1)
-    elseif n==0
+
+function find_min_higher_power(n::Int, pow2=1)
+    """
+    finds the minimum power of 2 greater than the number n
+    """
+    return pow2 > n ? pow2 : find_max_power_of_2(n, pow2<<1)
+end
+
+function ^(base::ϕField, n::Int, result=2, bitwiser=find_min_higher_power(n>>1))::ϕField
+    if bitwiser==0
+        # done. return base^n
         return result
+    elseif n & bitwiser == 0
+        # this binary digit of n is zero, meaning no power of 2 at that bit
+        # so just square the current result, and bitshift down by 1
+        return ^(base, n, (result*result)>>1, bitwiser>>1)
     else
-        p, q, measure = 0, 0, 0
-        while n >= 1<<(p+1)
-            p +=1
-            remainder = n%(1<<p)
-            if remainder > measure
-                q, measure = p, remainder
-            end
-        end
-        return ^(base, n - 1<<p, (result*result*base)>>2, p-q)
+        # this binary digit of n is one, meaning a power of 2 exists at that bit
+        # square the current result, multiply by the base and bitshift down by 2 this time
+        return ^(base, n, (result*result*base)>>2, bitwiser>>1)
     end
 end
 
