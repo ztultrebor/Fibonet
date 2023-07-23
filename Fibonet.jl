@@ -1,4 +1,4 @@
-import Base: convert, promote_rule, *, ^, >>
+import Base: convert, promote_rule, *, ^, >>>
 
 struct ϕField <: Number
     # represents numbers of the form A + B√5 in Big Integer form
@@ -17,30 +17,23 @@ function *(num1::ϕField, num2::ϕField)
     return ϕField(natty, rooty)
 end
 
-function >>(num::ϕField, shift::Int)
+function >>>(num::ϕField, shift::Int)
     # "Field" right bitshift for numbers of the form A + B√5
-    return ϕField(num.natural>>shift, num.root5coeff>>shift)
+    return ϕField(num.natural>>>shift, num.root5coeff>>>shift)
 end
 
-function find_min_higher_power(n::Int, pow2=1)
-    """
-    finds the minimum power of 2 greater than the number n
-    """
-    return pow2 > n ? pow2 : find_max_power_of_2(n, pow2<<1)
-end
-
-function ^(base::ϕField, n::Int, result=2, bitwiser=find_min_higher_power(n>>1))::ϕField
+function ^(base::ϕField, n::Int, result=2, bitwiser=2^63)::ϕField
     if bitwiser==0
-        # done. return base^n
+        # done.
         return result
     elseif n & bitwiser == 0
         # this binary digit of n is zero, meaning no power of 2 at that bit
         # so just square the current result, and bitshift down by 1
-        return ^(base, n, (result*result)>>1, bitwiser>>1)
+        return ^(base, n, (result*result)>>>1, bitwiser>>>1)
     else
         # this binary digit of n is one, meaning a power of 2 exists at that bit
         # square the current result, multiply by the base and bitshift down by 2 this time
-        return ^(base, n, (result*result*base)>>2, bitwiser>>1)
+        return ^(base, n, (result*result*base)>>>2, bitwiser>>>1)
     end
 end
 
